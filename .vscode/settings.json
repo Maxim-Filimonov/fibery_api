@@ -1,0 +1,4 @@
+{
+  "git-blame.gitWebUrl": "",
+  "window.title": "${activeEditorShort}${separator}${rootName}${separator}${profileName} ${separator} [Branch: main]"
+}
