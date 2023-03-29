@@ -1,11 +1,16 @@
+# auth.py
 import os
 import requests
+from pydantic import BaseModel, Field
 
 
-class FiberyAuth:
-    def __init__(self, token=None, workspace=None):
-        self.token = token or os.getenv("FIBERY_TOKEN")
-        self.workspace = workspace or os.getenv("FIBERY_workspace")
+class FiberyAuth(BaseModel):
+    token: str = Field(..., env="FIBERY_TOKEN")
+    workspace: str = Field(..., env="FIBERY_WORKSPACE")
+    base_url: str = None
+
+    def __init__(self, **data):
+        super().__init__(**data)
         self.base_url = f"https://{self.workspace}.fibery.io/api/commands"
 
     def authenticate(self):

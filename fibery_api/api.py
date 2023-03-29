@@ -1,3 +1,4 @@
+# api.py
 import requests
 from .auth import FiberyAuth
 from pydantic import BaseModel, Field
@@ -5,7 +6,7 @@ from pydantic import BaseModel, Field
 
 class FiberyAPI:
     def __init__(self, token=None, account=None):
-        self.auth = FiberyAuth(token, account)
+        self.auth = FiberyAuth(token=token, workspace=account)
         self.base_url = self.auth.base_url
 
     def get_schema(self, with_description=False):
@@ -30,7 +31,6 @@ class FiberyAPI:
             types = schema[0]["result"]["fibery/types"]
             for type_data in types:
                 if type_data["fibery/name"] == type_name:
-                    print(type_data)
                     return FiberyType(**type_data)
         raise TypeNotFoundError(f"Type '{type_name}' not found in the schema.")
 
