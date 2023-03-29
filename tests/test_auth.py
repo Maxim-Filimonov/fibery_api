@@ -1,6 +1,6 @@
 import unittest
 from dotenv import load_dotenv
-from fibery.auth import FiberyAuth
+from fibery_api.auth import FiberyAuth
 import os
 
 
