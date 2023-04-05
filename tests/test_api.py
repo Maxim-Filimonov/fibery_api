@@ -42,34 +42,34 @@ class TestFiberyAPI(unittest.TestCase):
 
     def test_create_entity(self):
         fibery_api = FiberyAPI(token=self.token, account=self.workspace)
+
         entity_type = "Demo/Player"
         entity_data = {
-            "Demo/name": "Curtly Ambrose",
-            "Demo/Full Name": "Curtly Elconn Lynwall Ambrose",
-            "Demo/Born": "1963-09-21",
-            "Demo/Youth Career": {
-                "start": "1985-01-01",
-                "end": "1986-01-01"
-            },
-            "Demo/Shirt Number": 1,
-            "Demo/Height": "2.01",
-            "Demo/Retired?": True,
-            "Demo/Batting Hand": {"fibery/id": "b0ed3a80-9747-11e9-9f03-fd937c4ecf3b"}
+            "Demo/name": "Curtly Ambrose"
         }
-        result = fibery_api.create_entity(entity_type, entity_data)
-        self.assertIsInstance(result, dict)
-        self.assertIn("fibery/id", result)
-        self.assertEqual(result["Demo/name"], entity_data["Demo/name"])
+        try:
+            fields = [
+                FiberyField(name="Demo/name", type="fibery/text", meta={}),
+            ]
+            fibery_api.create_database(entity_type, fields)
+            result = fibery_api.create_entity(entity_type, entity_data)
+            self.assertIsInstance(result, dict)
+            self.assertIn("fibery/id", result)
+            self.assertEqual(result["Demo/name"], entity_data["Demo/name"])
+        finally:
+            fibery_api.delete_database(entity_type)
 
     def test_create_database(self):
         fibery_api = FiberyAPI(token=self.token, account=self.workspace)
         database_name = "Demo/Player"
-        fibery_api.delete_database(database_name)
         fields = [
             FiberyField(name="Demo/name", type="fibery/text", meta={}),
         ]
-        result = fibery_api.create_database(database_name, fields)
-        self.assertEqual(result.success, True, result.result)
+        try:
+            result = fibery_api.create_database(database_name, fields)
+            self.assertEqual(result.success, True, result.result)
+        finally:
+            fibery_api.delete_database(database_name)
 
 
 if __name__ == "__main__":

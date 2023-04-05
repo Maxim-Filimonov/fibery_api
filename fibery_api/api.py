@@ -139,7 +139,7 @@ class FiberyAPI:
                 return created_entity.result
             else:
                 logger.error("Failed to create the entity: %s",
-                             response.status_code)
+                             created_entity)
                 raise EntityCreationError("Failed to create the entity.")
         response.raise_for_status()
 
