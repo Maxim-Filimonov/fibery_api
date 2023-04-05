@@ -1,7 +1,7 @@
 import os
 import unittest
 from dotenv import load_dotenv
-from fibery_api.api import FiberyAPI, FiberyType
+from fibery_api.api import FiberyAPI, FiberyType, FiberyFieldIn
 from fibery_api.api import TypeNotFoundError
 
 
@@ -39,6 +39,37 @@ class TestFiberyAPI(unittest.TestCase):
         type_name = "nonexistent-type"
         with self.assertRaises(TypeNotFoundError):
             fibery_api.get_type_by_name(type_name)
+
+    def test_create_entity(self):
+        fibery_api = FiberyAPI(token=self.token, account=self.workspace)
+        entity_type = "Cricket/Player"
+        entity_data = {
+            "Cricket/name": "Curtly Ambrose",
+            "Cricket/Full Name": "Curtly Elconn Lynwall Ambrose",
+            "Cricket/Born": "1963-09-21",
+            "Cricket/Youth Career": {
+                "start": "1985-01-01",
+                "end": "1986-01-01"
+            },
+            "Cricket/Shirt Number": 1,
+            "Cricket/Height": "2.01",
+            "Cricket/Retired?": True,
+            "Cricket/Batting Hand": {"fibery/id": "b0ed3a80-9747-11e9-9f03-fd937c4ecf3b"}
+        }
+        result = fibery_api.create_entity(entity_type, entity_data)
+        self.assertIsInstance(result, dict)
+        self.assertIn("fibery/id", result)
+        self.assertEqual(result["Cricket/name"], entity_data["Cricket/name"])
+
+    def test_create_database(self):
+        fibery_api = FiberyAPI(token=self.token, account=self.workspace)
+        database_name = "Cricket/Player"
+        fields = [
+            FiberyFieldIn(name="Cricket/name", type="fibery/text", title=True),
+        ]
+        result = fibery_api.create_database(database_name, fields)
+        self.assertIsInstance(result, dict)
+        self.assertEqual(result['fibery/name'], database_name)
 
 
 if __name__ == "__main__":
