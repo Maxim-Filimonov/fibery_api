@@ -143,6 +143,34 @@ class FiberyAPI:
                 raise EntityCreationError("Failed to create the entity.")
         response.raise_for_status()
 
+    def delete_database(self, database_name: str, delete_entities: bool = True, delete_related_fields: bool = True):
+        headers = {
+            "Authorization": f"Token {self.auth.token}",
+            "Content-Type": "application/json",
+        }
+        data = [
+            {
+                "command": "fibery.schema/batch",
+                "args": {
+                    "commands": [
+                        {
+                            "command": "schema.type/delete",
+                            "args": {
+                                "name": database_name,
+                                "delete-entities?": delete_entities,
+                                "delete-related-fields?": delete_related_fields
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+
+        response = requests.post(self.base_url, headers=headers, json=data)
+        if response.status_code == 200:
+            return response.json()
+        response.raise_for_status()
+
 
 def add_missing_domain_fields(fields: List[FiberyField]) -> List[FiberyField]:
     field_names = [field.name for field in fields]

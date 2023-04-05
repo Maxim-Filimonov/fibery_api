@@ -64,6 +64,7 @@ class TestFiberyAPI(unittest.TestCase):
     def test_create_database(self):
         fibery_api = FiberyAPI(token=self.token, account=self.workspace)
         database_name = "Demo/Player"
+        fibery_api.delete_database(database_name)
         fields = [
             FiberyField(name="Demo/name", type="fibery/text", meta={}),
         ]
