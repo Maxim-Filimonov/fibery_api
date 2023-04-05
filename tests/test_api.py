@@ -1,7 +1,7 @@
 import os
 import unittest
 from dotenv import load_dotenv
-from fibery_api.api import FiberyAPI, FiberyType, FiberyFieldIn
+from fibery_api.api import FiberyAPI, FiberyType, FiberyField
 from fibery_api.api import TypeNotFoundError
 
 
@@ -42,34 +42,33 @@ class TestFiberyAPI(unittest.TestCase):
 
     def test_create_entity(self):
         fibery_api = FiberyAPI(token=self.token, account=self.workspace)
-        entity_type = "Cricket/Player"
+        entity_type = "Demo/Player"
         entity_data = {
-            "Cricket/name": "Curtly Ambrose",
-            "Cricket/Full Name": "Curtly Elconn Lynwall Ambrose",
-            "Cricket/Born": "1963-09-21",
-            "Cricket/Youth Career": {
+            "Demo/name": "Curtly Ambrose",
+            "Demo/Full Name": "Curtly Elconn Lynwall Ambrose",
+            "Demo/Born": "1963-09-21",
+            "Demo/Youth Career": {
                 "start": "1985-01-01",
                 "end": "1986-01-01"
             },
-            "Cricket/Shirt Number": 1,
-            "Cricket/Height": "2.01",
-            "Cricket/Retired?": True,
-            "Cricket/Batting Hand": {"fibery/id": "b0ed3a80-9747-11e9-9f03-fd937c4ecf3b"}
+            "Demo/Shirt Number": 1,
+            "Demo/Height": "2.01",
+            "Demo/Retired?": True,
+            "Demo/Batting Hand": {"fibery/id": "b0ed3a80-9747-11e9-9f03-fd937c4ecf3b"}
         }
         result = fibery_api.create_entity(entity_type, entity_data)
         self.assertIsInstance(result, dict)
         self.assertIn("fibery/id", result)
-        self.assertEqual(result["Cricket/name"], entity_data["Cricket/name"])
+        self.assertEqual(result["Demo/name"], entity_data["Demo/name"])
 
     def test_create_database(self):
         fibery_api = FiberyAPI(token=self.token, account=self.workspace)
-        database_name = "Cricket/Player"
+        database_name = "Demo/Player"
         fields = [
-            FiberyFieldIn(name="Cricket/name", type="fibery/text", title=True),
+            FiberyField(name="Demo/name", type="fibery/text", meta={}),
         ]
         result = fibery_api.create_database(database_name, fields)
-        self.assertIsInstance(result, dict)
-        self.assertEqual(result['fibery/name'], database_name)
+        self.assertEqual(result.success, True, result.result)
 
 
 if __name__ == "__main__":
